@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>html-ppt-remote 测试</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{overflow:hidden;background:#1a1a2e;color:#e0e0e0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+.slide{width:100vw;height:100vh;position:absolute;top:0;left:0;display:none;align-items:center;justify-content:center;flex-direction:column;padding:3rem}
+.slide.active{display:flex}
+h1{font-size:3rem;margin-bottom:1rem}
+p{font-size:1.2rem;opacity:.7;max-width:600px;text-align:center;line-height:1.6}
+.slide:nth-child(1){background:linear-gradient(135deg,#667eea,#764ba2)}
+.slide:nth-child(2){background:linear-gradient(135deg,#f093fb,#f5576c)}
+.slide:nth-child(3){background:linear-gradient(135deg,#4facfe,#00f2fe)}
+.slide:nth-child(4){background:linear-gradient(135deg,#43e97b,#38f9d7)}
+.slide:nth-child(5){background:linear-gradient(135deg,#fa709a,#fee140)}
+.nav{position:fixed;bottom:2rem;right:2rem;z-index:100;display:flex;gap:1rem;align-items:center}
+.nav button{width:48px;height:48px;border:2px solid #fff;background:rgba(0,0,0,.3);color:#fff;font-size:1.5rem;border-radius:8px;cursor:pointer;backdrop-filter:blur(8px)}
+.nav button:hover{background:rgba(255,255,255,.2)}
+.counter{font-size:1rem;font-family:monospace;letter-spacing:.1em}
+.hint{position:fixed;top:1rem;left:1rem;font-size:.75rem;opacity:.5;font-family:monospace;line-height:1.8}
+.tag{display:inline-block;padding:2px 8px;background:rgba(255,255,255,.15);border-radius:4px;margin:0 2px}
+</style>
+</head>
+<body>
+
+<div class="hint">
+  <p>测试说明：</p>
+  <p>1. 第1页按 <span class="tag">←</span> 或 <span class="tag">PageUp</span> → 自动全屏</p>
+  <p>2. 第5页按 <span class="tag">→</span> 或 <span class="tag">PageDown</span> → 退出全屏</p>
+  <p>3. 翻页笔按键均兼容（罗技R400/诺为等）</p>
+</div>
+
+<section class="slide active">
+  <h1>📖 第 1 页 · 封面</h1>
+  <p>按 ← 或 PageUp 试试 → 应该自动全屏</p>
+</section>
+
+<section class="slide">
+  <h1>🎯 第 2 页 · 内容</h1>
+  <p>正常翻页，不会触发全屏</p>
+</section>
+
+<section class="slide">
+  <h1>💡 第 3 页 · 中间页</h1>
+  <p>翻页笔按键正常工作</p>
+</section>
+
+<section class="slide">
+  <h1>🚀 第 4 页 · 倒数第二</h1>
+  <p>快到了，再翻一页到尾页</p>
+</section>
+
+<section class="slide">
+  <h1>✅ 第 5 页 · 尾页</h1>
+  <p>按 → 或 PageDown 试试 → 应该退出全屏</p>
+</section>
+
+<div class="nav">
+  <button id="prev">←</button>
+  <span class="counter"><span id="cur">1</span> / <span id="total">5</span></span>
+  <button id="next">→</button>
+</div>
+
+<script>
+// 页面自身的翻页逻辑（本 skill 不接管，只处理全屏切换）
+const slides = document.querySelectorAll('.slide');
+let idx = 0;
+function go(n) {
+  idx = Math.max(0, Math.min(slides.length - 1, n));
+  slides.forEach((s, i) => s.classList.toggle('active', i === idx));
+  document.getElementById('cur').textContent = idx + 1;
+}
+document.getElementById('prev').onclick = () => go(idx - 1);
+document.getElementById('next').onclick = () => go(idx + 1);
+document.addEventListener('keydown', e => {
+  if (['ArrowRight',' ','PageDown'].includes(e.key)) go(idx + 1);
+  if (['ArrowLeft','PageUp','Backspace'].includes(e.key)) go(idx - 1);
+});
+</script>
+
+<!-- 翻页笔遥控 + 智能全屏 -->
+<script src="slide-remote.js"></script>
+</body>
+</html>

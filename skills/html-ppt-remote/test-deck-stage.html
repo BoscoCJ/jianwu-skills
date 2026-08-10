@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>html-ppt-remote · beautiful-html-templates 兼容测试</title>
+<style>
+:root {
+  --bg: #1a1a2e;
+  --fg: #e0e0e0;
+  --accent: #667eea;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  overflow: hidden;
+}
+
+.hint {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  font-size: 14px;
+  line-height: 1.8;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 12px 16px;
+  border-radius: 8px;
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+}
+
+.hint strong {
+  color: var(--accent);
+}
+
+deck-stage {
+  width: 100vw;
+  height: 100vh;
+}
+
+deck-stage section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 60px;
+  text-align: center;
+}
+
+deck-stage h1 {
+  font-size: 72px;
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+
+deck-stage p {
+  font-size: 28px;
+  opacity: 0.8;
+  max-width: 800px;
+  line-height: 1.6;
+}
+
+deck-stage section:nth-child(1) {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+deck-stage section:nth-child(2) {
+  background: linear-gradient(135deg, #f093fb, #f5576c);
+}
+
+deck-stage section:nth-child(3) {
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
+}
+
+deck-stage section:nth-child(4) {
+  background: linear-gradient(135deg, #43e97b, #38f9d7);
+}
+
+deck-stage section:nth-child(5) {
+  background: linear-gradient(135deg, #fa709a, #fee140);
+}
+</style>
+</head>
+<body>
+
+<div class="hint">
+  <strong>beautiful-html-templates 兼容测试</strong><br>
+  结构：<deck-stage> web component<br>
+  页码：<span id="current">1</span> / <span id="total">5</span><br><br>
+  第1页按 ← 或 PageUp → 自动全屏<br>
+  第5页按 → 或 PageDown → 退出全屏
+</div>
+
+<script src="deck-stage.js"></script>
+
+<deck-stage>
+  <section data-label="封面">
+    <h1>📖 第 1 页</h1>
+    <p>按 ← 或 PageUp 试试<br>应该自动全屏</p>
+  </section>
+
+  <section data-label="内容">
+    <h1>🎯 第 2 页</h1>
+    <p>正常翻页<br>不会触发全屏</p>
+  </section>
+
+  <section data-label="中间页">
+    <h1>💡 第 3 页</h1>
+    <p>翻页笔按键正常工作</p>
+  </section>
+
+  <section data-label="倒数第二">
+    <h1>🚀 第 4 页</h1>
+    <p>快到了<br>再翻一页到尾页</p>
+  </section>
+
+  <section data-label="尾页">
+    <h1>✅ 第 5 页</h1>
+    <p>按 → 或 PageDown 试试<br>应该退出全屏</p>
+  </section>
+</deck-stage>
+
+<script src="slide-remote.js"></script>
+<script>
+// 监听页码变化，更新显示
+const deck = document.querySelector('deck-stage');
+deck.addEventListener('slidechange', (e) => {
+  document.getElementById('current').textContent = e.detail.index + 1;
+  document.getElementById('total').textContent = e.detail.total;
+});
+</script>
+</body>
+</html>
