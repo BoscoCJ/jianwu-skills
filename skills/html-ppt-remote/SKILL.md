@@ -94,12 +94,7 @@ compatibility: 纯浏览器端 JS，无需 Node.js 环境，任何能运行 HTML
 <script src="slide-remote.js"></script>
 ```
 
-`slide-remote.js` 文件位于：
-```
-C:\Users\bson9\.workbuddy\skills\html-ppt-remote\slide-remote.js
-```
-
-实际部署时把 JS 文件复制到 HTML 同级目录，或用 CDN 托管。
+`slide-remote.js` 就在**本 skill 同级目录**下，复制出来放到 HTML 同级目录即可，或用 CDN 托管。
 
 ## 支持的翻页笔按键
 
