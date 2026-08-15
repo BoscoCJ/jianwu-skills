@@ -1,3 +1,12 @@
+---
+name: html-ppt-remote
+description: >
+  给任意 HTML 幻灯片注入翻页笔遥控 + 智能全屏能力。当用户提到"翻页笔"、"全屏"、"幻灯片翻页"、
+  "HTML PPT"、"presentation remote"时自动触发。兼容所有幻灯片结构（deck-stage、.slide、#deck、Swiper.js 等）。
+license: MIT
+compatibility: 纯浏览器端 JS，无需 Node.js 环境，任何能运行 HTML 的环境即可
+---
+
 # html-ppt-remote
 
 > 给任意 HTML 幻灯片注入"翻页笔遥控 + 智能全屏"能力。

@@ -1,3 +1,12 @@
+---
+name: skill-name
+description: >
+  一句话描述这个技能做什么。当用户提到"xxx"、"yyy"时自动触发。
+  （description 是给 AI 判断何时调用用的，要写触发关键词）
+license: MIT
+# allowed-tools: Read, Write, Bash
+---
+
 # skill-name
 
 > 一句话描述这个技能做什么。
