@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>朋友圈文案</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: #f5f3f0;
+            color: #2c2c2c;
+            line-height: 1.8;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 40px 20px; }
+        header {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #f9e4b7 0%, #f5d5a0 50%, #e8c88a 100%);
+            color: #5a4a3a;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 20px rgba(201, 169, 110, 0.2);
+        }
+        header h1 { font-size: 2.2em; font-weight: 400; margin-bottom: 20px; letter-spacing: 2px; color: #4a3a2a; }
+        header .subtitle { font-size: 1.2em; color: #7a6a5a; font-style: italic; margin-bottom: 30px; font-weight: 300; }
+        header .meta {
+            font-size: 0.9em; color: #8a7a6a;
+            border-top: 1px solid rgba(255,255,255,0.5);
+            padding-top: 20px; margin-top: 20px;
+            background: rgba(255,255,255,0.3);
+            padding: 15px 30px; border-radius: 25px; display: inline-block;
+        }
+        .stage-section { margin-bottom: 60px; }
+        .stage-header {
+            background: #3a3a3a; color: #f5f3f0;
+            padding: 20px 30px; margin-bottom: 30px;
+            border-left: 4px solid #c9a96e;
+        }
+        .stage-header h2 { font-size: 1.5em; font-weight: 400; margin-bottom: 10px; }
+        .stage-header .stage-desc { font-size: 0.95em; color: #b0b0b0; }
+        .post-card {
+            background: #fff; border-radius: 8px; padding: 30px;
+            margin-bottom: 25px; box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            border: 1px solid #e8e4df; position: relative;
+        }
+        .post-meta {
+            display: flex; align-items: center; gap: 15px;
+            margin-bottom: 20px; padding-bottom: 15px;
+            border-bottom: 1px solid #eee; flex-wrap: wrap;
+        }
+        .post-badge { background: #c9a96e; color: #fff; padding: 4px 12px; border-radius: 20px; font-size: 0.85em; font-weight: 500; }
+        .post-date { background: #f0ede8; color: #666; padding: 4px 12px; border-radius: 20px; font-size: 0.85em; }
+        .post-sequence { background: #e8f4f8; color: #2c5f7c; padding: 4px 12px; border-radius: 20px; font-size: 0.85em; font-weight: 500; }
+        .post-title {
+            font-size: 0.95em; font-weight: 400; color: #b0a090;
+            margin-bottom: 20px; font-style: italic;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .post-title::before { content: "📌"; font-size: 0.9em; font-style: normal; }
+        .post-title::after { content: "提示：这是主题标签，不是文案内容"; font-size: 0.8em; color: #d0c0b0; font-style: normal; margin-left: auto; }
+        .post-content { font-size: 1em; line-height: 2; color: #444; white-space: pre-wrap; margin-bottom: 20px; }
+        .post-content strong { color: #2c2c2c; font-weight: 600; }
+        .post-content blockquote { border-left: 3px solid #c9a96e; padding-left: 20px; margin: 15px 0; color: #666; font-style: italic; }
+        .image-suggestion { background: #f9f7f4; border: 1px dashed #c9a96e; padding: 15px 20px; border-radius: 6px; font-size: 0.9em; color: #888; }
+        .image-suggestion strong { color: #c9a96e; font-weight: 500; }
+        .copy-btn {
+            position: absolute; top: 15px; right: 15px;
+            background: #f0ede8; border: none; padding: 6px 12px;
+            border-radius: 6px; font-size: 0.8em; color: #666;
+            cursor: pointer; transition: all 0.3s;
+            display: flex; align-items: center; gap: 5px;
+        }
+        .copy-btn:hover { background: #c9a96e; color: #fff; }
+        .copy-btn.copied { background: #4caf50; color: #fff; }
+        .toc {
+            position: fixed; left: 20px; top: 50%; transform: translateY(-50%);
+            width: 160px; background: #fff; border-radius: 12px; padding: 20px 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1); border: 2px solid #e8c88a;
+            z-index: 1000; max-height: 80vh; overflow-y: auto;
+        }
+        .toc-title { font-size: 0.9em; font-weight: 600; color: #c9a96e; margin-bottom: 15px; text-align: center; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        .toc-list { list-style: none; }
+        .toc-list li { margin-bottom: 8px; }
+        .toc-list a { display: block; font-size: 0.8em; color: #666; text-decoration: none; padding: 6px 10px; border-radius: 6px; transition: all 0.3s; }
+        .toc-list a:hover { background: #f9f7f4; color: #c9a96e; }
+        .toc-list .toc-date { font-size: 0.7em; color: #aaa; display: block; margin-top: 2px; }
+        .footer { text-align: center; padding: 40px 20px; color: #999; font-size: 0.9em; border-top: 1px solid #e0e0e0; margin-top: 60px; }
+        @media (max-width: 600px) {
+            header h1 { font-size: 1.6em; }
+            .post-card { padding: 20px; }
+            .post-meta { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .toc { display: none; }
+            .container { padding-bottom: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>{{TITLE}}</h1>
+        <div class="subtitle">{{SUBTITLE}}</div>
+        <div class="meta">{{META}}</div>
+    </header>
+
+    <div class="toc">
+        <div class="toc-title"> 文案目录</div>
+        <ul class="toc-list" id="toc-list"></ul>
+    </div>
+
+    <div class="container" id="container"></div>
+
+    <div class="footer">
+        <p>{{FOOTER_TEXT}}</p>
+    </div>
+
+    <script>
+        // 文案数据（由生成器注入）
+        const MOMENT_DATA = {{DATA_JSON}};
+
+// 防折叠混淆算法（优化版：确保最少插入数量和字符类型覆盖）
+        function antiFoldProcess(text, intensity = 'medium') {
+            if (!text || text.length === 0) return text;
+
+            const config = {
+                light: { min: 1, max: 3, interval: 20 },
+                medium: { min: 2, max: 4, interval: 12 },
+                heavy: { min: 4, max: 6, interval: 6 }
+            };
+            const chars = ['\u200B', '\u200C', '\u200D', '\uFEFF'];
+            const cfg = config[intensity] || config.medium;
+
+            const minInserts = cfg.min;
+            const intervalInserts = Math.floor(text.length / cfg.interval);
+            const totalInserts = Math.max(minInserts, intervalInserts);
+
+            let result = text;
+            let charIndex = 0;
+
+            const step = Math.floor(result.length / totalInserts);
+            for (let i = 0; i < totalInserts; i++) {
+                const insertPos = (i + 1) * step;
+                if (insertPos <= result.length) {
+                    const char = chars[charIndex % chars.length];
+                    result = result.slice(0, insertPos) + char + result.slice(insertPos);
+                    charIndex++;
+                }
+            }
+
+            for (let i = result.length; i > 0; i--) {
+                if (Math.random() < 0.3) {
+                    const char = chars[Math.floor(Math.random() * chars.length)];
+                    result = result.slice(0, i) + char + result.slice(i);
+                }
+            }
+
+            return result;
+        }
+
+        // 复制文案
+        async function copyPost(btn) {
+            const card = btn.closest('.post-card');
+            const content = card.querySelector('.post-content');
+            if (!content) return;
+            const text = content.innerText;
+            const processedText = antiFoldProcess(text, 'medium');
+            try {
+                await navigator.clipboard.writeText(processedText);
+                btn.innerHTML = '✓ 已复制';
+                btn.classList.add('copied');
+                setTimeout(() => { btn.innerHTML = ' 复制'; btn.classList.remove('copied'); }, 2000);
+            } catch (e) {
+                const textarea = document.createElement('textarea');
+                textarea.value = processedText;
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                btn.innerHTML = '✓ 已复制';
+                setTimeout(() => { btn.innerHTML = ' 复制'; }, 2000);
+            }
+        }
+
+        // 自动定位到今天
+        (function() {
+            const today = new Date();
+            const month = today.getMonth() + 1;
+            const day = today.getDate();
+            const dateStr = month + '/' + day;
+            const dateToStage = { '9/5': 'stage-0', '9/6': 'stage-1', '9/7': 'stage-2', '9/8': 'stage-2', '9/9': 'stage-3', '9/10': 'stage-3' };
+            const targetId = dateToStage[dateStr];
+            if (targetId) {
+                const targetEl = document.getElementById(targetId);
+                if (targetEl) { setTimeout(() => { targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 500); }
+            }
+        })();
+
+        // 渲染文案
+        function renderMoments() {
+            const container = document.getElementById('container');
+            const tocList = document.getElementById('toc-list');
+            MOMENT_DATA.forEach((stage, stageIndex) => {
+                // 添加目录项
+                const tocItem = document.createElement('li');
+                tocItem.innerHTML = '<a href="#stage-' + stageIndex + '">' + stage.title + '<span class="toc-date">' + stage.date + '</span></a>';
+                tocList.appendChild(tocItem);
+
+                // 添加阶段区块
+                const stageSection = document.createElement('div');
+                stageSection.className = 'stage-section';
+                stageSection.id = 'stage-' + stageIndex;
+                stageSection.innerHTML = '<div class="stage-header"><h2>' + stage.title + '</h2><div class="stage-desc">' + stage.date + ' · ' + stage.description + '</div></div>';
+
+                stage.posts.forEach(post => {
+                    const postCard = document.createElement('div');
+                    postCard.className = 'post-card';
+                    postCard.innerHTML = '<button class="copy-btn" onclick="copyPost(this)">📋 复制</button>' +
+                        '<div class="post-meta"><span class="post-badge">' + post.badge + '</span><span class="post-date">' + post.date + '</span><span class="post-sequence">' + post.sequence + '</span></div>' +
+                        (post.title ? '<div class="post-title">' + post.title + '</div>' : '') +
+                        '<div class="post-content">' + post.content + '</div>' +
+                        (post.imageSuggestion ? '<div class="image-suggestion"><strong>配图建议：</strong>' + post.imageSuggestion + '</div>' : '');
+                    stageSection.appendChild(postCard);
+                });
+
+                container.appendChild(stageSection);
+            });
+        }
+
+        renderMoments();
+    </script>
+</body>
+</html>

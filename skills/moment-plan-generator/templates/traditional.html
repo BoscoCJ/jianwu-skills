@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>朋友圈文案</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: "KaiTi", "STKaiti", "Baskerville", serif;
+            background: #f4f0e8;
+            color: #2c2c2c;
+            line-height: 1.8;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cfilter id='noise'%3E%3CfeTurbulence baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 40px 20px; }
+        header {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(180deg, #8b0000 0%, #5c0000 100%);
+            color: #f4f0e8;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 20px rgba(139, 0, 0, 0.3);
+            border-bottom: 4px solid #d4af37;
+        }
+        header h1 { font-size: 2.4em; font-weight: 400; margin-bottom: 20px; letter-spacing: 4px; color: #f4f0e8; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        header .subtitle { font-size: 1.1em; color: #e8dcc8; font-style: italic; margin-bottom: 30px; font-weight: 300; }
+        header .meta {
+            font-size: 0.9em; color: #d4c8a8;
+            border-top: 1px solid rgba(212, 175, 55, 0.5);
+            padding-top: 20px; margin-top: 20px;
+            background: rgba(0,0,0,0.2);
+            padding: 15px 30px; border-radius: 4px; display: inline-block;
+        }
+        .stage-section { margin-bottom: 60px; }
+        .stage-header {
+            background: #1a1a1a; color: #f4f0e8;
+            padding: 20px 30px; margin-bottom: 30px;
+            border-left: 4px solid #8b0000;
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+        }
+        .stage-header h2 { font-size: 1.6em; font-weight: 400; margin-bottom: 10px; letter-spacing: 2px; }
+        .stage-header .stage-desc { font-size: 0.9em; color: #b0a890; }
+        .post-card {
+            background: #faf8f4; border-radius: 4px; padding: 30px;
+            margin-bottom: 25px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            border: 1px solid #e8e0d0; position: relative;
+            border-top: 3px solid #8b0000;
+        }
+        .post-meta {
+            display: flex; align-items: center; gap: 15px;
+            margin-bottom: 20px; padding-bottom: 15px;
+            border-bottom: 1px dashed #d4c8a8; flex-wrap: wrap;
+        }
+        .post-badge { background: #8b0000; color: #f4f0e8; padding: 4px 12px; border-radius: 4px; font-size: 0.85em; font-weight: 500; }
+        .post-date { background: #f0ebe0; color: #5c4a2a; padding: 4px 12px; border-radius: 4px; font-size: 0.85em; }
+        .post-sequence { background: #e8f4f8; color: #2c5f7c; padding: 4px 12px; border-radius: 4px; font-size: 0.85em; font-weight: 500; }
+        .post-title {
+            font-size: 1em; font-weight: 400; color: #8b0000;
+            margin-bottom: 20px; font-style: italic;
+            display: flex; align-items: center; gap: 8px;
+            border-left: 3px solid #d4af37; padding-left: 12px;
+        }
+        .post-title::before { content: "◆"; font-size: 0.8em; font-style: normal; color: #d4af37; }
+        .post-title::after { content: "主题标签"; font-size: 0.75em; color: #b0a890; font-style: normal; margin-left: auto; }
+        .post-content { font-size: 1em; line-height: 2; color: #3a3a3a; white-space: pre-wrap; margin-bottom: 20px; font-family: "KaiTi", "STKaiti", serif; }
+        .post-content strong { color: #8b0000; font-weight: 600; }
+        .post-content blockquote { border-left: 3px solid #d4af37; padding-left: 20px; margin: 15px 0; color: #5c4a2a; font-style: italic; }
+        .image-suggestion { background: #f4f0e8; border: 1px dashed #d4af37; padding: 15px 20px; border-radius: 4px; font-size: 0.9em; color: #8a7a6a; }
+        .image-suggestion strong { color: #8b0000; font-weight: 500; }
+        .copy-btn {
+            position: absolute; top: 15px; right: 15px;
+            background: #8b0000; border: none; padding: 6px 12px;
+            border-radius: 4px; font-size: 0.8em; color: #f4f0e8;
+            cursor: pointer; transition: all 0.3s;
+            display: flex; align-items: center; gap: 5px;
+        }
+        .copy-btn:hover { background: #5c0000; transform: translateY(-1px); }
+        .copy-btn.copied { background: #4caf50; color: #fff; }
+        .toc {
+            position: fixed; left: 20px; top: 50%; transform: translateY(-50%);
+            width: 160px; background: #faf8f4; border-radius: 4px; padding: 20px 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15); border: 2px solid #8b0000;
+            z-index: 1000; max-height: 80vh; overflow-y: auto;
+        }
+        .toc-title { font-size: 0.9em; font-weight: 600; color: #8b0000; margin-bottom: 15px; text-align: center; border-bottom: 1px solid #d4c8a8; padding-bottom: 10px; letter-spacing: 2px; }
+        .toc-list { list-style: none; }
+        .toc-list li { margin-bottom: 8px; }
+        .toc-list a { display: block; font-size: 0.8em; color: #5c4a2a; text-decoration: none; padding: 6px 10px; border-radius: 4px; transition: all 0.3s; }
+        .toc-list a:hover { background: #f0ebe0; color: #8b0000; }
+        .toc-list .toc-date { font-size: 0.7em; color: #b0a890; display: block; margin-top: 2px; }
+        .footer { text-align: center; padding: 40px 20px; color: #8a7a6a; font-size: 0.9em; border-top: 1px solid #d4c8a8; margin-top: 60px; }
+        @media (max-width: 600px) {
+            header h1 { font-size: 1.6em; letter-spacing: 2px; }
+            .post-card { padding: 20px; }
+            .post-meta { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .toc { display: none; }
+            .container { padding-bottom: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>{{TITLE}}</h1>
+        <div class="subtitle">{{SUBTITLE}}</div>
+        <div class="meta">{{META}}</div>
+    </header>
+
+    <div class="toc">
+        <div class="toc-title">文案目录</div>
+        <ul class="toc-list" id="toc-list"></ul>
+    </div>
+
+    <div class="container" id="container"></div>
+
+    <div class="footer">
+        <p>{{FOOTER_TEXT}}</p>
+    </div>
+
+    <script>
+        const MOMENT_DATA = {{DATA_JSON}};
+
+        function antiFoldProcess(text, intensity = 'medium') {
+            if (!text || text.length === 0) return text;
+            const config = { light: { min: 20, max: 30 }, medium: { min: 10, max: 15 }, heavy: { min: 5, max: 8 } };
+            const chars = ['​', '‌', '‍', '﻿'];
+            let result = text;
+            for (let i = result.length; i > 0; i--) {
+                if (Math.random() < (1 / (Math.floor(Math.random() * (config[intensity].max - config[intensity].min + 1)) + config[intensity].min))) {
+                    result = result.slice(0, i) + chars[Math.floor(Math.random() * chars.length)] + result.slice(i);
+                }
+            }
+            return result;
+        }
+
+        async function copyPost(btn) {
+            const card = btn.closest('.post-card');
+            const content = card.querySelector('.post-content');
+            if (!content) return;
+            const text = content.innerText;
+            const processedText = antiFoldProcess(text, 'medium');
+            try {
+                await navigator.clipboard.writeText(processedText);
+                btn.innerHTML = '✓ 已复制';
+                btn.classList.add('copied');
+                setTimeout(() => { btn.innerHTML = ' 复制'; btn.classList.remove('copied'); }, 2000);
+            } catch (e) {
+                const textarea = document.createElement('textarea');
+                textarea.value = processedText;
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                btn.innerHTML = '✓ 已复制';
+                setTimeout(() => { btn.innerHTML = ' 复制'; }, 2000);
+            }
+        }
+
+        (function() {
+            const today = new Date();
+            const month = today.getMonth() + 1;
+            const day = today.getDate();
+            const dateStr = month + '/' + day;
+            const dateToStage = { '9/5': 'stage-0', '9/6': 'stage-1', '9/7': 'stage-2', '9/8': 'stage-2', '9/9': 'stage-3', '9/10': 'stage-3' };
+            const targetId = dateToStage[dateStr];
+            if (targetId) {
+                const targetEl = document.getElementById(targetId);
+                if (targetEl) { setTimeout(() => { targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 500); }
+            }
+        })();
+
+        function renderMoments() {
+            const container = document.getElementById('container');
+            const tocList = document.getElementById('toc-list');
+            MOMENT_DATA.forEach((stage, stageIndex) => {
+                const tocItem = document.createElement('li');
+                tocItem.innerHTML = '<a href="#stage-' + stageIndex + '">' + stage.title + '<span class="toc-date">' + stage.date + '</span></a>';
+                tocList.appendChild(tocItem);
+
+                const stageSection = document.createElement('div');
+                stageSection.className = 'stage-section';
+                stageSection.id = 'stage-' + stageIndex;
+                stageSection.innerHTML = '<div class="stage-header"><h2>' + stage.title + '</h2><div class="stage-desc">' + stage.date + ' · ' + stage.description + '</div></div>';
+
+                stage.posts.forEach(post => {
+                    const postCard = document.createElement('div');
+                    postCard.className = 'post-card';
+                    postCard.innerHTML = '<button class="copy-btn" onclick="copyPost(this)"> 复制</button>' +
+                        '<div class="post-meta"><span class="post-badge">' + post.badge + '</span><span class="post-date">' + post.date + '</span><span class="post-sequence">' + post.sequence + '</span></div>' +
+                        (post.title ? '<div class="post-title">' + post.title + '</div>' : '') +
+                        '<div class="post-content">' + post.content + '</div>' +
+                        (post.imageSuggestion ? '<div class="image-suggestion"><strong>配图建议：</strong>' + post.imageSuggestion + '</div>' : '');
+                    stageSection.appendChild(postCard);
+                });
+
+                container.appendChild(stageSection);
+            });
+        }
+
+        renderMoments();
+    </script>
+</body>
+</html>

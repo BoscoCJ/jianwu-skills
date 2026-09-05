@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>朋友圈文案</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: "Consolas", "Courier New", monospace;
+            background: #0a1929;
+            color: #00ff41;
+            line-height: 1.8;
+            background-image: radial-gradient(circle at 20% 50%, rgba(0, 255, 65, 0.03) 0%, transparent 50%);
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 40px 20px; }
+        header {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(180deg, #0d2137 0%, #0a1929 100%);
+            color: #00ff41;
+            margin-bottom: 40px;
+            border: 2px solid #00ff41;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.3), inset 0 0 20px rgba(0, 255, 65, 0.1);
+            position: relative;
+        }
+        header::before {
+            content: ">_";
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 1.2em;
+            color: #00ff41;
+            opacity: 0.5;
+        }
+        header h1 { font-size: 2em; font-weight: 400; margin-bottom: 20px; letter-spacing: 2px; color: #00ff41; text-shadow: 0 0 10px rgba(0, 255, 65, 0.5); }
+        header .subtitle { font-size: 1em; color: #00cc33; font-style: italic; margin-bottom: 30px; font-weight: 300; }
+        header .meta {
+            font-size: 0.85em; color: #00aa22;
+            border-top: 1px solid #00ff41;
+            padding-top: 20px; margin-top: 20px;
+            background: rgba(0, 255, 65, 0.05);
+            padding: 15px 30px; display: inline-block;
+            border: 1px solid #00ff41;
+        }
+        .stage-section { margin-bottom: 60px; }
+        .stage-header {
+            background: #0d2137; color: #00ff41;
+            padding: 20px 30px; margin-bottom: 30px;
+            border: 2px solid #00ff41;
+            box-shadow: 0 0 15px rgba(0, 255, 65, 0.2);
+            position: relative;
+        }
+        .stage-header::before {
+            content: "/*";
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: #00aa22;
+            opacity: 0.5;
+        }
+        .stage-header h2 { font-size: 1.5em; font-weight: 400; margin-bottom: 10px; letter-spacing: 1px; }
+        .stage-header .stage-desc { font-size: 0.85em; color: #00aa22; }
+        .post-card {
+            background: #0d2137; border-radius: 4px; padding: 30px;
+            margin-bottom: 25px; box-shadow: 0 2px 12px rgba(0, 255, 65, 0.1);
+            border: 1px solid #00ff41; position: relative;
+        }
+        .post-meta {
+            display: flex; align-items: center; gap: 15px;
+            margin-bottom: 20px; padding-bottom: 15px;
+            border-bottom: 1px dashed #00aa22; flex-wrap: wrap;
+        }
+        .post-badge { background: #00ff41; color: #0a1929; padding: 4px 12px; border-radius: 4px; font-size: 0.85em; font-weight: 500; }
+        .post-date { background: rgba(0, 255, 65, 0.1); color: #00ff41; padding: 4px 12px; border-radius: 4px; font-size: 0.85em; border: 1px solid #00aa22; }
+        .post-sequence { background: rgba(0, 170, 34, 0.2); color: #00ff41; padding: 4px 12px; border-radius: 4px; font-size: 0.85em; font-weight: 500; border: 1px solid #00aa22; }
+        .post-title {
+            font-size: 0.95em; font-weight: 400; color: #00ff41;
+            margin-bottom: 20px; font-style: italic;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .post-title::before { content: "//"; font-size: 0.9em; font-style: normal; color: #00aa22; }
+        .post-title::after { content: "// label"; font-size: 0.75em; color: #00aa22; font-style: normal; margin-left: auto; opacity: 0.7; }
+        .post-content { font-size: 0.95em; line-height: 2; color: #00ff41; white-space: pre-wrap; margin-bottom: 20px; font-family: "Consolas", "Courier New", monospace; }
+        .post-content strong { color: #00ff41; font-weight: 600; text-shadow: 0 0 5px rgba(0, 255, 65, 0.3); }
+        .post-content blockquote { border-left: 3px solid #00ff41; padding-left: 20px; margin: 15px 0; color: #00cc33; font-style: italic; background: rgba(0, 255, 65, 0.05); padding: 10px 20px; }
+        .image-suggestion { background: rgba(0, 255, 65, 0.05); border: 1px dashed #00aa22; padding: 15px 20px; border-radius: 4px; font-size: 0.85em; color: #00aa22; }
+        .image-suggestion strong { color: #00ff41; font-weight: 500; }
+        .copy-btn {
+            position: absolute; top: 15px; right: 15px;
+            background: #00ff41; border: none; padding: 6px 12px;
+            border-radius: 4px; font-size: 0.8em; color: #0a1929;
+            cursor: pointer; transition: all 0.3s;
+            display: flex; align-items: center; gap: 5px;
+            font-family: "Consolas", monospace;
+        }
+        .copy-btn:hover { background: #00cc33; box-shadow: 0 0 10px rgba(0, 255, 65, 0.5); }
+        .copy-btn.copied { background: #00aa22; color: #0a1929; }
+        .toc {
+            position: fixed; left: 20px; top: 50%; transform: translateY(-50%);
+            width: 160px; background: #0d2137; border-radius: 4px; padding: 20px 15px;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.2); border: 2px solid #00ff41;
+            z-index: 1000; max-height: 80vh; overflow-y: auto;
+        }
+        .toc-title { font-size: 0.85em; font-weight: 600; color: #00ff41; margin-bottom: 15px; text-align: center; border-bottom: 1px solid #00aa22; padding-bottom: 10px; letter-spacing: 1px; }
+        .toc-list { list-style: none; }
+        .toc-list li { margin-bottom: 8px; }
+        .toc-list a { display: block; font-size: 0.8em; color: #00aa22; text-decoration: none; padding: 6px 10px; border-radius: 4px; transition: all 0.3s; border: 1px solid transparent; }
+        .toc-list a:hover { background: rgba(0, 255, 65, 0.1); color: #00ff41; border-color: #00ff41; }
+        .toc-list .toc-date { font-size: 0.7em; color: #006611; display: block; margin-top: 2px; }
+        .footer { text-align: center; padding: 40px 20px; color: #00aa22; font-size: 0.85em; border-top: 1px solid #00aa22; margin-top: 60px; }
+        @media (max-width: 600px) {
+            header h1 { font-size: 1.4em; }
+            .post-card { padding: 20px; }
+            .post-meta { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .toc { display: none; }
+            .container { padding-bottom: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>{{TITLE}}</h1>
+        <div class="subtitle">{{SUBTITLE}}</div>
+        <div class="meta">{{META}}</div>
+    </header>
+
+    <div class="toc">
+        <div class="toc-title">[目录]</div>
+        <ul class="toc-list" id="toc-list"></ul>
+    </div>
+
+    <div class="container" id="container"></div>
+
+    <div class="footer">
+        <p>{{FOOTER_TEXT}}</p>
+    </div>
+
+    <script>
+        const MOMENT_DATA = {{DATA_JSON}};
+
+        function antiFoldProcess(text, intensity = 'medium') {
+            if (!text || text.length === 0) return text;
+            const config = { light: { min: 20, max: 30 }, medium: { min: 10, max: 15 }, heavy: { min: 5, max: 8 } };
+            const chars = ['​', '‌', '‍', '﻿'];
+            let result = text;
+            for (let i = result.length; i > 0; i--) {
+                if (Math.random() < (1 / (Math.floor(Math.random() * (config[intensity].max - config[intensity].min + 1)) + config[intensity].min))) {
+                    result = result.slice(0, i) + chars[Math.floor(Math.random() * chars.length)] + result.slice(i);
+                }
+            }
+            return result;
+        }
+
+        async function copyPost(btn) {
+            const card = btn.closest('.post-card');
+            const content = card.querySelector('.post-content');
+            if (!content) return;
+            const text = content.innerText;
+            const processedText = antiFoldProcess(text, 'medium');
+            try {
+                await navigator.clipboard.writeText(processedText);
+                btn.innerHTML = '✓ copied';
+                btn.classList.add('copied');
+                setTimeout(() => { btn.innerHTML = '📋 copy'; btn.classList.remove('copied'); }, 2000);
+            } catch (e) {
+                const textarea = document.createElement('textarea');
+                textarea.value = processedText;
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                btn.innerHTML = '✓ copied';
+                setTimeout(() => { btn.innerHTML = '  copy'; }, 2000);
+            }
+        }
+
+        (function() {
+            const today = new Date();
+            const month = today.getMonth() + 1;
+            const day = today.getDate();
+            const dateStr = month + '/' + day;
+            const dateToStage = { '9/5': 'stage-0', '9/6': 'stage-1', '9/7': 'stage-2', '9/8': 'stage-2', '9/9': 'stage-3', '9/10': 'stage-3' };
+            const targetId = dateToStage[dateStr];
+            if (targetId) {
+                const targetEl = document.getElementById(targetId);
+                if (targetEl) { setTimeout(() => { targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 500); }
+            }
+        })();
+
+        function renderMoments() {
+            const container = document.getElementById('container');
+            const tocList = document.getElementById('toc-list');
+            MOMENT_DATA.forEach((stage, stageIndex) => {
+                const tocItem = document.createElement('li');
+                tocItem.innerHTML = '<a href="#stage-' + stageIndex + '">' + stage.title + '<span class="toc-date">' + stage.date + '</span></a>';
+                tocList.appendChild(tocItem);
+
+                const stageSection = document.createElement('div');
+                stageSection.className = 'stage-section';
+                stageSection.id = 'stage-' + stageIndex;
+                stageSection.innerHTML = '<div class="stage-header"><h2>' + stage.title + '</h2><div class="stage-desc">' + stage.date + ' · ' + stage.description + '</div></div>';
+
+                stage.posts.forEach(post => {
+                    const postCard = document.createElement('div');
+                    postCard.className = 'post-card';
+                    postCard.innerHTML = '<button class="copy-btn" onclick="copyPost(this)">📋 copy</button>' +
+                        '<div class="post-meta"><span class="post-badge">' + post.badge + '</span><span class="post-date">' + post.date + '</span><span class="post-sequence">' + post.sequence + '</span></div>' +
+                        (post.title ? '<div class="post-title">' + post.title + '</div>' : '') +
+                        '<div class="post-content">' + post.content + '</div>' +
+                        (post.imageSuggestion ? '<div class="image-suggestion"><strong>配图建议：</strong>' + post.imageSuggestion + '</div>' : '');
+                    stageSection.appendChild(postCard);
+                });
+
+                container.appendChild(stageSection);
+            });
+        }
+
+        renderMoments();
+    </script>
+</body>
+</html>

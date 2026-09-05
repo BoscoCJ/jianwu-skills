@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>朋友圈文案</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: "Arial Black", "Helvetica Neue", sans-serif;
+            background: #0a0a0a;
+            color: #00ffff;
+            line-height: 1.8;
+            background-image:
+                linear-gradient(45deg, rgba(191, 0, 255, 0.1) 0%, transparent 50%),
+                linear-gradient(-45deg, rgba(255, 0, 127, 0.1) 0%, transparent 50%);
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 40px 20px; }
+        header {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #1a0033 0%, #330066 50%, #0a001a 100%);
+            color: #00ffff;
+            margin-bottom: 40px;
+            border: 3px solid #bf00ff;
+            box-shadow: 0 0 30px rgba(191, 0, 255, 0.5), 0 0 60px rgba(255, 0, 127, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(0, 255, 255, 0.03) 10px,
+                rgba(0, 255, 255, 0.03) 20px
+            );
+            animation: scan 8s linear infinite;
+        }
+        @keyframes scan {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+        header h1 { font-size: 2.2em; font-weight: 900; margin-bottom: 20px; letter-spacing: 4px; color: #00ffff; text-shadow: 0 0 10px #00ffff, 0 0 20px #bf00ff; position: relative; }
+        header .subtitle { font-size: 1.1em; color: #ff007f; font-style: italic; margin-bottom: 30px; font-weight: 300; text-shadow: 0 0 5px #ff007f; position: relative; }
+        header .meta {
+            font-size: 0.85em; color: #bf00ff;
+            border-top: 2px solid #00ffff;
+            padding-top: 20px; margin-top: 20px;
+            background: rgba(0, 255, 255, 0.1);
+            padding: 15px 30px; display: inline-block;
+            border: 2px solid #00ffff;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+            position: relative;
+        }
+        .stage-section { margin-bottom: 60px; }
+        .stage-header {
+            background: linear-gradient(90deg, #1a0033 0%, #330066 100%); color: #00ffff;
+            padding: 20px 30px; margin-bottom: 30px;
+            border: 2px solid #bf00ff;
+            box-shadow: 0 0 20px rgba(191, 0, 255, 0.4);
+            position: relative;
+        }
+        .stage-header h2 { font-size: 1.6em; font-weight: 900; margin-bottom: 10px; letter-spacing: 2px; text-shadow: 0 0 5px #00ffff; }
+        .stage-header .stage-desc { font-size: 0.85em; color: #ff007f; }
+        .post-card {
+            background: #0f0f0f; border-radius: 8px; padding: 30px;
+            margin-bottom: 25px; box-shadow: 0 0 20px rgba(191, 0, 255, 0.2);
+            border: 2px solid #bf00ff; position: relative;
+            transition: all 0.3s;
+        }
+        .post-card:hover {
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+            border-color: #00ffff;
+        }
+        .post-meta {
+            display: flex; align-items: center; gap: 15px;
+            margin-bottom: 20px; padding-bottom: 15px;
+            border-bottom: 2px dashed #bf00ff; flex-wrap: wrap;
+        }
+        .post-badge { background: #bf00ff; color: #0a0a0a; padding: 4px 12px; border-radius: 4px; font-size: 0.85em; font-weight: 700; text-shadow: 0 0 5px #bf00ff; }
+        .post-date { background: rgba(0, 255, 255, 0.1); color: #00ffff; padding: 4px 12px; border-radius: 4px; font-size: 0.85em; border: 1px solid #00ffff; }
+        .post-sequence { background: rgba(255, 0, 127, 0.2); color: #ff007f; padding: 4px 12px; border-radius: 4px; font-size: 0.85em; font-weight: 700; border: 1px solid #ff007f; }
+        .post-title {
+            font-size: 1em; font-weight: 700; color: #00ffff;
+            margin-bottom: 20px; font-style: italic;
+            display: flex; align-items: center; gap: 8px;
+            text-shadow: 0 0 5px #00ffff;
+        }
+        .post-title::before { content: "▸"; font-size: 1em; font-style: normal; color: #ff007f; }
+        .post-title::after { content: "[LABEL]"; font-size: 0.7em; color: #bf00ff; font-style: normal; margin-left: auto; opacity: 0.7; }
+        .post-content { font-size: 0.95em; line-height: 2; color: #e0e0e0; white-space: pre-wrap; margin-bottom: 20px; font-family: "Arial", sans-serif; }
+        .post-content strong { color: #00ffff; font-weight: 700; text-shadow: 0 0 5px #00ffff; }
+        .post-content blockquote { border-left: 4px solid #ff007f; padding-left: 20px; margin: 15px 0; color: #ff007f; font-style: italic; background: rgba(255, 0, 127, 0.05); padding: 10px 20px; box-shadow: inset 0 0 10px rgba(255, 0, 127, 0.1); }
+        .image-suggestion { background: rgba(191, 0, 255, 0.1); border: 2px dashed #bf00ff; padding: 15px 20px; border-radius: 4px; font-size: 0.85em; color: #bf00ff; }
+        .image-suggestion strong { color: #00ffff; font-weight: 500; }
+        .copy-btn {
+            position: absolute; top: 15px; right: 15px;
+            background: linear-gradient(135deg, #bf00ff 0%, #ff007f 100%); border: none; padding: 8px 14px;
+            border-radius: 4px; font-size: 0.8em; color: #0a0a0a;
+            cursor: pointer; transition: all 0.3s;
+            display: flex; align-items: center; gap: 5px;
+            font-weight: 700;
+            box-shadow: 0 0 10px rgba(191, 0, 255, 0.5);
+        }
+        .copy-btn:hover { background: linear-gradient(135deg, #00ffff 0%, #00ccff 100%); box-shadow: 0 0 15px rgba(0, 255, 255, 0.7); transform: translateY(-2px); }
+        .copy-btn.copied { background: #00ff41; color: #0a0a0a; }
+        .toc {
+            position: fixed; left: 20px; top: 50%; transform: translateY(-50%);
+            width: 160px; background: #0f0f0f; border-radius: 8px; padding: 20px 15px;
+            box-shadow: 0 0 25px rgba(191, 0, 255, 0.4); border: 2px solid #bf00ff;
+            z-index: 1000; max-height: 80vh; overflow-y: auto;
+        }
+        .toc-title { font-size: 0.85em; font-weight: 700; color: #00ffff; margin-bottom: 15px; text-align: center; border-bottom: 2px solid #bf00ff; padding-bottom: 10px; letter-spacing: 2px; text-shadow: 0 0 5px #00ffff; }
+        .toc-list { list-style: none; }
+        .toc-list li { margin-bottom: 8px; }
+        .toc-list a { display: block; font-size: 0.8em; color: #bf00ff; text-decoration: none; padding: 6px 10px; border-radius: 4px; transition: all 0.3s; border: 1px solid transparent; }
+        .toc-list a:hover { background: rgba(0, 255, 255, 0.1); color: #00ffff; border-color: #00ffff; box-shadow: 0 0 10px rgba(0, 255, 255, 0.3); }
+        .toc-list .toc-date { font-size: 0.7em; color: #ff007f; display: block; margin-top: 2px; }
+        .footer { text-align: center; padding: 40px 20px; color: #bf00ff; font-size: 0.85em; border-top: 2px solid #bf00ff; margin-top: 60px; }
+        @media (max-width: 600px) {
+            header h1 { font-size: 1.4em; letter-spacing: 2px; }
+            .post-card { padding: 20px; }
+            .post-meta { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .toc { display: none; }
+            .container { padding-bottom: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>{{TITLE}}</h1>
+        <div class="subtitle">{{SUBTITLE}}</div>
+        <div class="meta">{{META}}</div>
+    </header>
+
+    <div class="toc">
+        <div class="toc-title">[NAV]</div>
+        <ul class="toc-list" id="toc-list"></ul>
+    </div>
+
+    <div class="container" id="container"></div>
+
+    <div class="footer">
+        <p>{{FOOTER_TEXT}}</p>
+    </div>
+
+    <script>
+        const MOMENT_DATA = {{DATA_JSON}};
+
+        function antiFoldProcess(text, intensity = 'medium') {
+            if (!text || text.length === 0) return text;
+            const config = { light: { min: 20, max: 30 }, medium: { min: 10, max: 15 }, heavy: { min: 5, max: 8 } };
+            const chars = ['​', '‌', '', '﻿'];
+            let result = text;
+            for (let i = result.length; i > 0; i--) {
+                if (Math.random() < (1 / (Math.floor(Math.random() * (config[intensity].max - config[intensity].min + 1)) + config[intensity].min))) {
+                    result = result.slice(0, i) + chars[Math.floor(Math.random() * chars.length)] + result.slice(i);
+                }
+            }
+            return result;
+        }
+
+        async function copyPost(btn) {
+            const card = btn.closest('.post-card');
+            const content = card.querySelector('.post-content');
+            if (!content) return;
+            const text = content.innerText;
+            const processedText = antiFoldProcess(text, 'medium');
+            try {
+                await navigator.clipboard.writeText(processedText);
+                btn.innerHTML = '✓ COPIED';
+                btn.classList.add('copied');
+                setTimeout(() => { btn.innerHTML = '📋 COPY'; btn.classList.remove('copied'); }, 2000);
+            } catch (e) {
+                const textarea = document.createElement('textarea');
+                textarea.value = processedText;
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                btn.innerHTML = '✓ COPIED';
+                setTimeout(() => { btn.innerHTML = ' COPY'; }, 2000);
+            }
+        }
+
+        (function() {
+            const today = new Date();
+            const month = today.getMonth() + 1;
+            const day = today.getDate();
+            const dateStr = month + '/' + day;
+            const dateToStage = { '9/5': 'stage-0', '9/6': 'stage-1', '9/7': 'stage-2', '9/8': 'stage-2', '9/9': 'stage-3', '9/10': 'stage-3' };
+            const targetId = dateToStage[dateStr];
+            if (targetId) {
+                const targetEl = document.getElementById(targetId);
+                if (targetEl) { setTimeout(() => { targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 500); }
+            }
+        })();
+
+        function renderMoments() {
+            const container = document.getElementById('container');
+            const tocList = document.getElementById('toc-list');
+            MOMENT_DATA.forEach((stage, stageIndex) => {
+                const tocItem = document.createElement('li');
+                tocItem.innerHTML = '<a href="#stage-' + stageIndex + '">' + stage.title + '<span class="toc-date">' + stage.date + '</span></a>';
+                tocList.appendChild(tocItem);
+
+                const stageSection = document.createElement('div');
+                stageSection.className = 'stage-section';
+                stageSection.id = 'stage-' + stageIndex;
+                stageSection.innerHTML = '<div class="stage-header"><h2>' + stage.title + '</h2><div class="stage-desc">' + stage.date + ' · ' + stage.description + '</div></div>';
+
+                stage.posts.forEach(post => {
+                    const postCard = document.createElement('div');
+                    postCard.className = 'post-card';
+                    postCard.innerHTML = '<button class="copy-btn" onclick="copyPost(this)">📋 COPY</button>' +
+                        '<div class="post-meta"><span class="post-badge">' + post.badge + '</span><span class="post-date">' + post.date + '</span><span class="post-sequence">' + post.sequence + '</span></div>' +
+                        (post.title ? '<div class="post-title">' + post.title + '</div>' : '') +
+                        '<div class="post-content">' + post.content + '</div>' +
+                        (post.imageSuggestion ? '<div class="image-suggestion"><strong>配图建议：</strong>' + post.imageSuggestion + '</div>' : '');
+                    stageSection.appendChild(postCard);
+                });
+
+                container.appendChild(stageSection);
+            });
+        }
+
+        renderMoments();
+    </script>
+</body>
+</html>
