@@ -1,22 +1,32 @@
 /**
  * 防折叠混淆算法（anti-fold.js）
  *
- * 原理：在文本中随机插入零宽字符，打破微信的重复性检测
+ * 核心方法：Unicode 排版方向控制字符（RLO/PDF）
+ * - RLO (Right-to-Left Override, U+202E)：让后续文本反向显示
+ * - PDF (Pop Directional Formatting, U+202C)：恢复正常方向
  *
- * 零宽字符类型：
+ * 原理：
+ * 原文：我见过 → 转为：我‮过见‬
+ * 字符顺序：我 + RLO + 过 + 见 + PDF
+ * 显示效果：正确（因为 RLO 使 "过见" 反向显示为 "见过"）
+ * 微信检测：字符序列被打乱，绕过哈希值检测
+ *
+ * 辅助方法：零宽字符混淆（备选方案）
  * - ​ 零宽空格 (Zero Width Space)
  * - ‌ 零宽非连接符 (Zero Width Non-Joiner)
  * - ‍ 零宽连接符 (Zero Width Joiner)
  * - ﻿ 零宽无间断空格 (Zero Width No-Break Space)
- *
- * 这些字符不可见，不影响阅读，但能改变文本的哈希值
  */
+
+const RLO = '‮';  // Right-to-Left Override
+const PDF = '‬';  // Pop Directional Formatting
+const LRO = '‭';  // Left-to-Right Override
 
 // 混淆强度配置
 const INTENSITY = {
-    light: { min: 20, max: 30 },      // 轻度：每 20-30 个字符插入
-    medium: { min: 10, max: 15 },     // 中度：每 10-15 个字符插入（默认）
-    heavy: { min: 5, max: 8 }         // 重度：每 5-8 个字符插入
+    light: { method: 'zero-width', density: 0.15 },       // 轻度：零宽字符，15% 密度
+    medium: { method: 'rlo-pdf', density: 0.25 },         // 中度：RLO/PDF，25% 密度（默认）
+    heavy: { method: 'hybrid', density: 0.4 }             // 重度：RLO/PDF + 零宽字符混合，40% 密度
 };
 
 // 零宽字符池
@@ -28,7 +38,103 @@ const ZERO_WIDTH_CHARS = [
 ];
 
 /**
- * 防折叠混淆处理（优化版：确保最少插入数量和字符类型覆盖）
+ * RLO/PDF 方法混淆（核心方法 - 完全随机）
+ * 随机选择短语用 RLO + PDF 包裹，使其反向显示
+ * 每次生成都不同，绕过微信的重复检测
+ */
+function antiFoldWithRLORandomly(text, density = 0.25) {
+    const RLO = '‮';
+    const PDF = '‬';
+
+    // 分句处理（按。！？等标点分割）
+    const sentences = text.split(/([。！？，；\n])/);
+
+    let result = '';
+    for (let i = 0; i < sentences.length; i++) {
+        const sentence = sentences[i];
+
+        // 非文字内容直接保留
+        if (!sentence || /^[。！？，；\n]$/.test(sentence)) {
+            result += sentence;
+            continue;
+        }
+
+        // 随机决定是否对这个句子中的词进行反向
+        if (Math.random() < density && sentence.length > 2) {
+            // 随机选择一个 2-4 字的子串进行反向
+            const maxSubLen = Math.min(4, sentence.length);
+            const minSubLen = 2;
+            const subLen = Math.floor(Math.random() * (maxSubLen - minSubLen + 1)) + minSubLen;
+
+            // 随机选择起点
+            const maxStart = sentence.length - subLen;
+            const startPos = Math.floor(Math.random() * (maxStart + 1));
+
+            const before = sentence.slice(0, startPos);
+            const target = sentence.slice(startPos, startPos + subLen);
+            const after = sentence.slice(startPos + subLen);
+
+            result += before + RLO + target + PDF + after;
+        } else {
+            result += sentence;
+        }
+    }
+
+    return result;
+}
+
+/**
+ * 零宽字符随机混淆（辅助方法）
+ * 完全随机插入位置和字符类型
+ */
+function antiFoldWithZeroWidthRandomly(text, density = 0.3) {
+    const chars = ['​', '‌', '‍', '﻿'];
+    let result = '';
+
+    for (let i = 0; i < text.length; i++) {
+        result += text[i];
+
+        // 每个字符后都有可能插入零宽字符（不是固定间隔！）
+        if (Math.random() < density) {
+            const randomChar = chars[Math.floor(Math.random() * chars.length)];
+            result += randomChar;
+        }
+    }
+
+    return result;
+}
+
+/**
+ * 混合随机混淆（最强 - 将多种方法组合）
+ * 每次调用都生成完全不同的结果
+ */
+function antiFoldHybridRandomly(text, intensity = 'medium') {
+    const config = {
+        light: { rlo: 0.15, zw: 0.1 },      // 轻度
+        medium: { rlo: 0.25, zw: 0.15 },    // 中度（默认）
+        heavy: { rlo: 0.35, zw: 0.25 }      // 重度
+    };
+
+    const cfg = config[intensity] || config.medium;
+
+    // 随机选择先用哪种方法（增加变化性）
+    let result = text;
+
+    if (Math.random() < 0.6) {
+        // 60% 概率先用 RLO
+        result = antiFoldWithRLORandomly(result, cfg.rlo);
+        result = antiFoldWithZeroWidthRandomly(result, cfg.zw);
+    } else {
+        // 40% 概率先用零宽字符
+        result = antiFoldWithZeroWidthRandomly(result, cfg.zw);
+        result = antiFoldWithRLORandomly(result, cfg.rlo);
+    }
+
+    return result;
+}
+
+/**
+ * 防折叠混淆处理（主入口 - 完全随机版）
  * @param {string} text - 原始文本
  * @param {string} intensity - 混淆强度（light/medium/heavy），默认 medium
  * @returns {string} - 混淆后的文本
@@ -36,42 +142,8 @@ const ZERO_WIDTH_CHARS = [
 function antiFoldProcess(text, intensity = 'medium') {
     if (!text || text.length === 0) return text;
 
-    const config = {
-        light: { min: 1, max: 3, interval: 20 },   // 轻度：至少 1 个，每 20 字插入
-        medium: { min: 2, max: 4, interval: 12 },  // 中度：至少 2 个，每 12 字插入
-        heavy: { min: 4, max: 6, interval: 6 }     // 重度：至少 4 个，每 6 字插入
-    };
-    const chars = ['​', '‌', '‍', '﻿'];
-    const cfg = config[intensity] || config.medium;
-
-    // 计算需要插入的字符数量
-    const minInserts = cfg.min;
-    const intervalInserts = Math.floor(text.length / cfg.interval);
-    const totalInserts = Math.max(minInserts, intervalInserts);
-
-    let result = text;
-    let charIndex = 0; // 用于循环选择字符类型
-
-    // 均匀分布插入位置
-    const step = Math.floor(result.length / totalInserts);
-    for (let i = 0; i < totalInserts; i++) {
-        const insertPos = (i + 1) * step;
-        if (insertPos <= result.length) {
-            const char = chars[charIndex % chars.length];
-            result = result.slice(0, insertPos) + char + result.slice(insertPos);
-            charIndex++;
-        }
-    }
-
-    // 额外随机插入一些（增加变化性）
-    for (let i = result.length; i > 0; i--) {
-        if (Math.random() < 0.3) {
-            const char = chars[Math.floor(Math.random() * chars.length)];
-            result = result.slice(0, i) + char + result.slice(i);
-        }
-    }
-
-    return result;
+    // 使用混合随机混淆作为主方法
+    return antiFoldHybridRandomly(text, intensity);
 }
 
 /**

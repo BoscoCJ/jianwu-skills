@@ -102,7 +102,7 @@
     </header>
 
     <div class="toc">
-        <div class="toc-title"> 文案目录</div>
+        <div class="toc-title">文案目录</div>
         <ul class="toc-list" id="toc-list"></ul>
     </div>
 
@@ -116,40 +116,66 @@
         // 文案数据（由生成器注入）
         const MOMENT_DATA = {{DATA_JSON}};
 
-// 防折叠混淆算法（优化版：确保最少插入数量和字符类型覆盖）
-        function antiFoldProcess(text, intensity = 'medium') {
-            if (!text || text.length === 0) return text;
+        // 防折叠混淆算法（随机版 - 每次复制都不同）
+        const RLO = '‮';  // Right-to-Left Override
+        const PDF = '‬';  // Pop Directional Formatting
+        const ZW_CHARS = ['​', '‌', '‍', '﻿'];
 
-            const config = {
-                light: { min: 1, max: 3, interval: 20 },
-                medium: { min: 2, max: 4, interval: 12 },
-                heavy: { min: 4, max: 6, interval: 6 }
-            };
-            const chars = ['\u200B', '\u200C', '\u200D', '\uFEFF'];
-            const cfg = config[intensity] || config.medium;
-
-            const minInserts = cfg.min;
-            const intervalInserts = Math.floor(text.length / cfg.interval);
-            const totalInserts = Math.max(minInserts, intervalInserts);
-
-            let result = text;
-            let charIndex = 0;
-
-            const step = Math.floor(result.length / totalInserts);
-            for (let i = 0; i < totalInserts; i++) {
-                const insertPos = (i + 1) * step;
-                if (insertPos <= result.length) {
-                    const char = chars[charIndex % chars.length];
-                    result = result.slice(0, insertPos) + char + result.slice(insertPos);
-                    charIndex++;
+        function antiFoldWithRLORandomly(text, density = 0.25) {
+            const sentences = text.split(/([。！？，；\n])/);
+            let result = '';
+            for (let i = 0; i < sentences.length; i++) {
+                const sentence = sentences[i];
+                if (!sentence || /^[。！？，；\n]$/.test(sentence)) {
+                    result += sentence;
+                    continue;
+                }
+                if (Math.random() < density && sentence.length > 2) {
+                    const maxSubLen = Math.min(4, sentence.length);
+                    const minSubLen = 2;
+                    const subLen = Math.floor(Math.random() * (maxSubLen - minSubLen + 1)) + minSubLen;
+                    const maxStart = sentence.length - subLen;
+                    const startPos = Math.floor(Math.random() * (maxStart + 1));
+                    const before = sentence.slice(0, startPos);
+                    const target = sentence.slice(startPos, startPos + subLen);
+                    const after = sentence.slice(startPos + subLen);
+                    result += before + RLO + target + PDF + after;
+                } else {
+                    result += sentence;
                 }
             }
+            return result;
+        }
 
-            for (let i = result.length; i > 0; i--) {
-                if (Math.random() < 0.3) {
-                    const char = chars[Math.floor(Math.random() * chars.length)];
-                    result = result.slice(0, i) + char + result.slice(i);
+        function antiFoldWithZeroWidthRandomly(text, density = 0.3) {
+            let result = '';
+            for (let i = 0; i < text.length; i++) {
+                result += text[i];
+                if (Math.random() < density) {
+                    const randomChar = ZW_CHARS[Math.floor(Math.random() * ZW_CHARS.length)];
+                    result += randomChar;
                 }
+            }
+            return result;
+        }
+
+        function antiFoldProcess(text, intensity = 'medium') {
+            if (!text || text.length === 0) return text;
+            const config = {
+                light: { rlo: 0.15, zw: 0.1 },
+                medium: { rlo: 0.25, zw: 0.15 },
+                heavy: { rlo: 0.35, zw: 0.25 }
+            };
+            const cfg = config[intensity] || config.medium;
+            let result = text;
+
+            // 随机决定混淆顺序（增加差异性）
+            if (Math.random() < 0.6) {
+                result = antiFoldWithRLORandomly(result, cfg.rlo);
+                result = antiFoldWithZeroWidthRandomly(result, cfg.zw);
+            } else {
+                result = antiFoldWithZeroWidthRandomly(result, cfg.zw);
+                result = antiFoldWithRLORandomly(result, cfg.rlo);
             }
 
             return result;
@@ -166,7 +192,7 @@
                 await navigator.clipboard.writeText(processedText);
                 btn.innerHTML = '✓ 已复制';
                 btn.classList.add('copied');
-                setTimeout(() => { btn.innerHTML = ' 复制'; btn.classList.remove('copied'); }, 2000);
+                setTimeout(() => { btn.innerHTML = '📋 复制'; btn.classList.remove('copied'); }, 2000);
             } catch (e) {
                 const textarea = document.createElement('textarea');
                 textarea.value = processedText;
@@ -177,7 +203,7 @@
                 document.execCommand('copy');
                 document.body.removeChild(textarea);
                 btn.innerHTML = '✓ 已复制';
-                setTimeout(() => { btn.innerHTML = ' 复制'; }, 2000);
+                setTimeout(() => { btn.innerHTML = '📋 复制'; }, 2000);
             }
         }
 
@@ -200,12 +226,10 @@
             const container = document.getElementById('container');
             const tocList = document.getElementById('toc-list');
             MOMENT_DATA.forEach((stage, stageIndex) => {
-                // 添加目录项
                 const tocItem = document.createElement('li');
                 tocItem.innerHTML = '<a href="#stage-' + stageIndex + '">' + stage.title + '<span class="toc-date">' + stage.date + '</span></a>';
                 tocList.appendChild(tocItem);
 
-                // 添加阶段区块
                 const stageSection = document.createElement('div');
                 stageSection.className = 'stage-section';
                 stageSection.id = 'stage-' + stageIndex;

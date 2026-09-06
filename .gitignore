@@ -41,6 +41,7 @@ pnpm-debug.log*
 # Test coverage
 coverage/
 .nyc_output/
+skills/moment-plan-generator/scripts/output
 
 # OS files
 Thumbs.db
