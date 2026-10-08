@@ -1,0 +1,40 @@
+# 自定义规则配置
+# 这些规则是在官方 Clash 配置基础上的补充
+# 包括本地直连、广告拒绝、国内服务直连等
+
+rules:
+  # 本地直连
+  - ['DOMAIN-SUFFIX', 'localhost', 'DIRECT']
+  - ['DOMAIN-SUFFIX', 'local', 'DIRECT']
+  - ['IP-CIDR', '127.0.0.0/8', 'DIRECT']
+  - ['IP-CIDR', '10.0.0.0/8', 'DIRECT']
+  - ['IP-CIDR', '172.16.0.0/12', 'DIRECT']
+  - ['IP-CIDR', '192.168.0.0/16', 'DIRECT']
+
+  # 广告拒绝
+  - ['DOMAIN-SUFFIX', 'adobe.com', 'REJECT']
+  - ['DOMAIN-SUFFIX', 'adobe.io', 'REJECT']
+  - ['DOMAIN-SUFFIX', 'adobe.*', 'REJECT']
+
+  # 国内服务直连
+  - ['DOMAIN-SUFFIX', 'yyaiyy.com', 'DIRECT']
+  - ['DOMAIN-SUFFIX', 'linghai.tech', 'DIRECT']
+  - ['DOMAIN-SUFFIX', 'tagss14.pro', 'DIRECT']
+
+  # 腾讯云相关（国内服务）
+  - ['DOMAIN-SUFFIX', 'tencentcloudapi.com', 'DIRECT']
+  - ['DOMAIN-SUFFIX', 'tencent.com', 'DIRECT']
+  - ['DOMAIN-SUFFIX', 'tencentcloud.com', 'DIRECT']
+  - ['DOMAIN-SUFFIX', 'tencentcs.com', 'DIRECT']
+  - ['DOMAIN-SUFFIX', 'tencent-cloud.net', 'DIRECT']
+  - ['DOMAIN-SUFFIX', 'tencentclb.com', 'DIRECT']
+  - ['DOMAIN-SUFFIX', 'qcloud.com', 'DIRECT']
+
+  # QQ 相关（国内服务）
+  - ['DOMAIN-SUFFIX', 'qq.com', 'DIRECT']
+
+  # 其他国内服务
+  - ['DOMAIN-SUFFIX', 'unicorn.org.cn', 'DIRECT']
+
+  # 特定代理分组
+  - ['DOMAIN-SUFFIX', 'xapi-token.xyz', '🙂 TAGSS']

@@ -1,0 +1,95 @@
+# Google 专用分组的规则配置
+# 格式: [规则类型, 域名/关键词, 目标分组]
+#
+# 使用场景：
+# - 当 Clash 备份文件中的节点更新时，运行 Skill 会自动：
+#   1. 从"海外AI"分组中读取最新节点列表
+#   2. 创建"Google专用"分组并使用这些节点
+#   3. 应用下面定义的所有规则
+#   4. 输出新的配置文件
+
+rules:
+  # Deepmind 相关
+  - ['DOMAIN-SUFFIX', 'deepmind.google', '🌐 Google专用']
+
+  # Generative AI 相关（Maker Suite、AI Studio 等）
+  - ['DOMAIN-SUFFIX', 'geller-pa.googleapis.com', '🌐 Google专用']
+  - ['DOMAIN-SUFFIX', 'generativelanguage.googleapis.com', '🌐 Google专用']
+  - ['DOMAIN-SUFFIX', 'proactivebackend-pa.googleapis.com', '🌐 Google专用']
+  - ['DOMAIN-SUFFIX', 'robinfrontend-pa.googleapis.com', '🌐 Google专用']
+  - ['DOMAIN', 'ai.google.dev', '🌐 Google专用']
+  - ['DOMAIN', 'alkalicore-pa.clients6.google.com', '🌐 Google专用']
+  - ['DOMAIN', 'alkalimakersuite-pa.clients6.google.com', '🌐 Google专用']
+  - ['DOMAIN', 'webchannel-alkalimakersuite-pa.clients6.google.com', '🌐 Google专用']
+  - ['DOMAIN-SUFFIX', 'generativeai.google', '🌐 Google专用']
+  - ['DOMAIN-SUFFIX', 'makersuite.google.com', '🌐 Google专用']
+  - ['DOMAIN-SUFFIX', 'ai.studio', '🌐 Google专用']
+  - ['DOMAIN-SUFFIX', 'aistudio.google.com', '🌐 Google专用']
+
+  # Bard 相关
+  - ['DOMAIN-SUFFIX', 'bard.google.com', '🌐 Google专用']
+
+  # Gemini 相关
+  - ['DOMAIN-SUFFIX', 'gemini.google', '🌐 Google专用']
+  - ['DOMAIN-SUFFIX', 'gemini.google.com', '🌐 Google专用']
+  - ['DOMAIN-SUFFIX', 'gemini.gstatic.com', '🌐 Google专用']
+
+  # Cloud 相关
+  - ['DOMAIN', 'cloudaicompanion.googleapis.com', '🌐 Google专用']
+  - ['DOMAIN', 'cloudcode-pa.googleapis.com', '🌐 Google专用']
+  - ['DOMAIN', 'daily-cloudcode-pa.googleapis.com', '🌐 Google专用']
+
+  # NotebookLM 相关（已停用的旧名称，保留兼容）
+  - ['DOMAIN', 'notebooklm-pa.googleapis.com', '🌐 Google专用']
+  - ['DOMAIN', 'notebooklm.googleapis.com', '🌐 Google专用']
+  - ['DOMAIN-SUFFIX', 'notebooklm.google', '🌐 Google专用']
+  - ['DOMAIN-SUFFIX', 'notebooklm.google.com', '🌐 Google专用']
+
+  # Notebook 相关（新产品名称）
+  - ['DOMAIN', 'notebook-pa.googleapis.com', '🌐 Google专用']
+  - ['DOMAIN', 'notebook.googleapis.com', '🌐 Google专用']
+  - ['DOMAIN-SUFFIX', 'notebook.google', '🌐 Google专用']
+  - ['DOMAIN-SUFFIX', 'notebook.google.com', '🌐 Google专用']
+
+  # Jules 相关
+  - ['DOMAIN-SUFFIX', 'jules.google', '🌐 Google专用']
+  - ['DOMAIN-SUFFIX', 'jules.google.com', '🌐 Google专用']
+
+  # Labs 相关
+  - ['DOMAIN-SUFFIX', 'labs.google', '🌐 Google专用']
+  - ['DOMAIN-SUFFIX', 'labs.google.com', '🌐 Google专用']
+
+  # Flow 相关
+  - ['DOMAIN-SUFFIX', 'flow.google', '🌐 Google专用']
+
+  # AI Sandbox 相关
+  - ['DOMAIN-SUFFIX', 'aisandbox-pa.googleapis.com', '🌐 Google专用']
+  - ['DOMAIN-SUFFIX', 'aicode.googleapis.com', '🌐 Google专用']
+  - ['DOMAIN-SUFFIX', 'aida.googleapis.com', '🌐 Google专用']
+
+  # Opal 相关
+  - ['DOMAIN-SUFFIX', 'opal.google', '🌐 Google专用']
+  - ['DOMAIN-SUFFIX', 'opal.google.com', '🌐 Google专用']
+
+  # Antigravity 相关（Google 内部AI项目）
+  - ['DOMAIN', 'antigravity-pa.googleapis.com', '🌐 Google专用']
+  - ['DOMAIN', 'antigravity.googleapis.com', '🌐 Google专用']
+  - ['DOMAIN-SUFFIX', 'antigravity.google', '🌐 Google专用']
+  - ['DOMAIN-SUFFIX', 'antigravity-unleash.goog', '🌐 Google专用']
+
+  # Stitch 相关
+  - ['DOMAIN-SUFFIX', 'stitch.withgoogle.com', '🌐 Google专用']
+
+  # Muse AI 相关（第三方AI工具）
+  - ['DOMAIN-SUFFIX', 'muse.ai', '🌐 Google专用']
+
+  # 通用 Google 规则
+  - ['DOMAIN-KEYWORD', 'google', '🌐 Google专用']
+  - ['DOMAIN-SUFFIX', 'googleapis.cn', '🌐 Google专用']
+  - ['DOMAIN-SUFFIX', 'googleapis.com', '🌐 Google专用']
+
+# 代理组配置
+proxy_group:
+  name: '🌐 Google专用'
+  source: '🧲 海外AI'  # 从此分组复制节点列表
+  insert_after: '🧲 海外AI'  # 在此分组之后插入新分组
