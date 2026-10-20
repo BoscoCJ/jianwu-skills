@@ -1,0 +1,4 @@
+interface:
+  display_name: "HTML 转可编辑 PPTX"
+  short_description: "保留 HTML 配色与布局，转换原生可编辑 PPTX，兼顾投屏字号及无自动缩字"
+  default_prompt: "使用 $html-to-editable-pptx 将这份 HTML 幻灯片转换成保留原配色、投屏大字、无工具栏且不自动缩字的可编辑 PPTX。"
