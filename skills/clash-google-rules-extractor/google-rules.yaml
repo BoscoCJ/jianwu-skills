@@ -8,6 +8,7 @@
 #   3. 应用下面定义的所有规则
 #   4. 输出新的配置文件
 
+# AI 专项规则：插入到原始规则中最后一条 → 🧲 海外AI 的规则之后
 rules:
   # Deepmind 相关
   - ['DOMAIN-SUFFIX', 'deepmind.google', '🌐 Google专用']
@@ -83,7 +84,13 @@ rules:
   # Muse AI 相关（第三方AI工具）
   - ['DOMAIN-SUFFIX', 'muse.ai', '🌐 Google专用']
 
-  # 通用 Google 规则
+# 通用 Google 规则：原位替换，不前置
+# 在原始规则中找到同类型+同域名的规则，保持位置不变，只把目标改为 Google专用
+# 原因：若前置，会抢先匹配 dl.google.com(DIRECT)、mtalk.google.com(谷歌FCM)、
+#       google-analytics.com / firebaselogging-pa.googleapis.com(广告过滤)、
+#       youtubei.googleapis.com(国外媒体) 等更具体的原始规则
+# 原始规则中找不到时，插入到 GEOIP,CN 之前
+override_rules:
   - ['DOMAIN-KEYWORD', 'google', '🌐 Google专用']
   - ['DOMAIN-SUFFIX', 'googleapis.cn', '🌐 Google专用']
   - ['DOMAIN-SUFFIX', 'googleapis.com', '🌐 Google专用']

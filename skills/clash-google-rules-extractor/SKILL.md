@@ -52,4 +52,9 @@ To add or modify rules, edit the corresponding YAML file.
   - All original configuration from backup
   - New "🌐 Google专用" proxy group and rules
   - All custom rules from `custom-rules.yaml`
-- Rules are applied in order: custom rules first, then Google rules, then original rules
+- Rule placement:
+  1. Custom rules (`custom-rules.yaml`) go at the very top
+  2. AI-specific Google rules (`google-rules.yaml` → `rules`) are inserted right after the last original rule targeting "🧲 海外AI"
+  3. Generic Google rules (`google-rules.yaml` → `override_rules`: `DOMAIN-KEYWORD,google`, `googleapis.com`, `googleapis.cn`) replace the matching original rule **in place**, only changing the target group. If no match exists, insert before `GEOIP,CN`
+  4. Never move the generic rules to the top: they would shadow more specific original rules such as `dl.google.com` (DIRECT), `mtalk.google.com` (谷歌FCM), `google-analytics.com` (广告过滤) and `youtubei.googleapis.com` (国外媒体)
+- Skip a custom rule if an identical rule already exists, or if an earlier `DOMAIN-SUFFIX` rule with the same target already covers it

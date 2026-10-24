@@ -3,6 +3,11 @@
 # 包括本地直连、广告拒绝、国内服务直连等
 
 rules:
+  # 特定服务直连（优先级最高）
+  - ['DOMAIN-SUFFIX', 'cephalon.cloud', 'DIRECT']
+  - ['DOMAIN-SUFFIX', 'lightcc.cloud', 'DIRECT']
+  - ['DOMAIN-SUFFIX', 'wiportal.wiwide.com', 'DIRECT']
+
   # 本地直连
   - ['DOMAIN-SUFFIX', 'localhost', 'DIRECT']
   - ['DOMAIN-SUFFIX', 'local', 'DIRECT']
@@ -19,7 +24,8 @@ rules:
   # 国内服务直连
   - ['DOMAIN-SUFFIX', 'yyaiyy.com', 'DIRECT']
   - ['DOMAIN-SUFFIX', 'linghai.tech', 'DIRECT']
-  - ['DOMAIN-SUFFIX', 'tagss14.pro', 'DIRECT']
+  - ['DOMAIN-SUFFIX', 'tagss14.pro', 'DIRECT']  # 已覆盖 user.tagss14.pro
+  - ['DOMAIN', 'applications.temporary-subscription.work', 'DIRECT']
 
   # 腾讯云相关（国内服务）
   - ['DOMAIN-SUFFIX', 'tencentcloudapi.com', 'DIRECT']
@@ -30,11 +36,16 @@ rules:
   - ['DOMAIN-SUFFIX', 'tencentclb.com', 'DIRECT']
   - ['DOMAIN-SUFFIX', 'qcloud.com', 'DIRECT']
 
-  # QQ 相关（国内服务）
-  - ['DOMAIN-SUFFIX', 'qq.com', 'DIRECT']
+  # QQ / 微信相关（国内服务）
+  - ['DOMAIN-SUFFIX', 'qq.com', 'DIRECT']  # 已覆盖 weixin.qq.com
+  - ['DOMAIN-SUFFIX', 'qpic.cn', 'DIRECT']
 
   # 其他国内服务
   - ['DOMAIN-SUFFIX', 'unicorn.org.cn', 'DIRECT']
+  - ['DOMAIN-SUFFIX', 'drivergenius.com', 'DIRECT']
+  - ['DOMAIN-SUFFIX', 'foxitcloud.com', 'DIRECT']
 
   # 特定代理分组
   - ['DOMAIN-SUFFIX', 'xapi-token.xyz', '🙂 TAGSS']
+  - ['DOMAIN-SUFFIX', 'faka.rawchat.cn', '🙂 TAGSS']
+  - ['DOMAIN-SUFFIX', 'tagss.pro', '🙂 TAGSS']
